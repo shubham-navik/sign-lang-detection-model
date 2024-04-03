@@ -18,7 +18,7 @@ def load_images_from_dir(directory):
         for filename in os.listdir(label_dir):
             img_path = os.path.join(label_dir, filename)
             img = cv2.imread(img_path)
-            img = cv2.resize(img, (64, 64))  # Resize image to desired dimensions
+            img = cv2.resize(img, (48, 48))  # Resize image to desired dimensions
             images.append(img)
             labels.append(index)
         index += 1
@@ -37,8 +37,9 @@ X_train = X_train / 255.0
 X_test = X_test / 255.0
 
 # Build CNN model
+# Build CNN model
 model = Sequential()
-model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)))
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(48, 48, 3)))  # Update input shape here
 model.add(MaxPooling2D((2, 2)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D((2, 2)))
@@ -50,11 +51,11 @@ model.add(Dense(len(label_to_index), activation='softmax'))
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Train model
-model.fit(X_train, y_train, epochs=100, batch_size=128, validation_data=(X_test, y_test))
+model.fit(X_train, y_train, epochs=50, batch_size=128, validation_data=(X_test, y_test))
 
 # Evaluate model
 test_loss, test_acc = model.evaluate(X_test, y_test)
 print(f'Test accuracy: {test_acc}')
 
 # Save model
-model.save('sign_language_model.h5')
+model.save('./sign_language_model.h5')
